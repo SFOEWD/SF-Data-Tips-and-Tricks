@@ -9,11 +9,11 @@ book:
   chapters:
     - index.qmd
     - datasf.qmd
+    - excel.qmd
+    - sharepoint.qmd
     - spatial.qmd
     - geocoding.qmd
-    - sharepoint.qmd
     - icons.qmd
-    - excel.qmd
     - snowflake.qmd
     - targets.qmd
     - references.qmd

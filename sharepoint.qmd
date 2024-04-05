@@ -5,7 +5,7 @@ Sharepoint is part of many data pipelines, and the easiest way to interact with 
 ```{r eval = FALSE}
 library(Microsoft365R)
 
-wp <- get_sharepoint_site("ECN-Workforce Programs")
+wp <- get_sharepoint_site("Workforce Programs")
 wp_docs <- wp$get_drive("Documents")
 
 wp_docs$list_files()
@@ -23,7 +23,7 @@ connect_to_sharepoint_site_docs <- function(sp_site) {
   return(sp_site_doc)
 }
 
-connect_to_wp_docs <- function() connect_to_sharepoint_site_docs("ECN-Workforce Programs")
+connect_to_wp_docs <- function() connect_to_sharepoint_site_docs("Workforce Programs")
 
 download_from_wp <- function(sp_file, destination) {
   docs <- connect_to_wp_docs()

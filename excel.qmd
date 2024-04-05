@@ -1,3 +1,69 @@
 # Excel Stuff
 
-{{< sficon wip color=red >}} WIP {{< sficon wip color=red >}}
+[{readxl}](https://readxl.tidyverse.org/) is the best package to *read* excel (xlsx) files.
+
+```{r eval = FALSE}
+library(readxl)
+df <- read_xlsx("path_to_xlsx")
+```
+
+
+[{writexl}](https://docs.ropensci.org/writexl/) is the best package to *write* excel (xlsx) files.
+
+```{r eval = FALSE}
+library(writexl)
+write_xlsx(mtcars, "car_data.xlsx")
+```
+
+You can also pass a named list of data frames to `write_xlsx`, and it will write each data frame to a separate sheet in the workbook.
+
+```{r eval = FALSE}
+l <- list(
+  "Car data" = mtcars,
+  "Flower data" = iris
+)
+
+write_xlsx(l, "my_data.xlsx")
+```
+
+With the `{purrr}` and [`{kapow}` packages](https://github.com/daranzolin/kapow) package you can loop through each sheet in a workbook and assign the table to its sheet name in your global environment:
+
+```{r eval = FALSE}
+library(readxl)
+library(purrr)
+library(kapow) # remotes::install_github("daranzolin/kapow)
+
+xlsx_path <- "path_to_xlsx"
+sheet_names <- excel_sheets(xlsx_path)
+sheet_names %>% 
+  map(\(sheet) read_excel(xlsx_path, sheet = sheet)) %>% 
+  set_names(sheet_names) %>% 
+  kapow()
+```
+
+To apply special formatting to an Excel workbook in R you can use the [{openxlsx} package.](https://github.com/ycphs/openxlsx) Here's an example of how OEWD writes to xlsx:
+
+```{r eval = FALSE}
+library(openxlsx)
+write_oewd_xlsx <- function(data, sheet_name, file, dateFormat = "yyyy/mm/dd", overwrite = FALSE) {
+  wb <- createWorkbook()
+  addWorksheet(wb, sheet_name)
+  style <- createStyle(halign = "LEFT", valign = "CENTER")
+  setColWidths(wb, sheet = 1, cols = 1:ncol(data), widths = "auto")
+  addStyle(wb, 1,
+           cols = 1:(ncol(data) + 1),
+           rows = 1:(nrow(data) + 1),
+           style = style,
+           gridExpand = TRUE)
+  headerStyle <- createStyle(
+    halign = "LEFT",
+    textDecoration = "Bold"
+  )
+  writeData(wb, 1, data, headerStyle = headerStyle)
+  options("openxlsx.dateFormat" = dateFormat)
+  saveWorkbook(wb, file, overwrite = overwrite)
+}
+
+write_oewd_xlsx(mtcars, "Car data", "car_data.xlsx")
+```
+
