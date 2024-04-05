@@ -1,5 +1,19 @@
 # Spatial Stuff
 
+The most essential packages for doing GIS work (with ESRI products) are:
+
+* sf
+* mapview
+* arcgislayers
+* arcgisbinding
+* tidycensus
+
+Honorable mention:
+
+* tmap
+* terra
+* leaflet
+
 ```{r warning = FALSE}
 library(sf)
 library(mapview)
@@ -9,7 +23,9 @@ library(tidyverse)
 
 ## ArcGIS REST API
 
-The [{arcgislayers} package](https://github.com/R-ArcGIS/arcgislayers) allows users to read/write data to/from the ArcGIS REST API.
+The [{arcgislayers} package](https://github.com/R-ArcGIS/arcgislayers) allows users to read and write data from and to the ArcGIS REST API. 
+
+### Reading Layers
 
 ```{r}
 sf_libraries_url <- "https://services.arcgis.com/Zs2aNLFN00jrS4gG/arcgis/rest/services/SF_Libraries/FeatureServer"
@@ -39,13 +55,12 @@ glimpse(sf_libraries)
 #   select(common_nam, gross_sq_f, address) %>% 
 #   filter(gross_sq_f < 8000) %>% 
 #   collect()
-
 mapview(sf_libraries, zcol = "air_conditioning")
 ```
 
 It is also convenient to wrap this up into the body of a single function:
 
-```{r eval = FALSE}
+```{r}
 get_arcgis_layer <- function(lyr_name) {
   url <- glue::glue("https://services.arcgis.com/Zs2aNLFN00jrS4gG/arcgis/rest/services/{lyr_name}/FeatureServer/0")
   out <- arcgislayers::arc_select(arcgislayers::arc_open(url))
@@ -55,10 +70,22 @@ get_arcgis_layer <- function(lyr_name) {
 libraries <- get_arcgis_layer("SF_Libraries")
 ```
 
+### Writing Layers
+
+If you have an sfgov.maps.arcgis.com account, you can write layers directly to your content. Read [the authorization page](https://r.esri.com/r-bridge-site/location-services/connecting-to-a-portal.html) for more information on credentials and tokens. 
+
+```{r eval = FALSE}
+nc <- st_read(system.file("shape/nc.shp", package = "sf"))
+tkn <- auth_code()
+set_arc_token(tkn)
+
+publish_res <- publish_layer(nc, "North Carolina SIDS sample")
+```
+
 
 ## ArcGIS Pro
 
-You can write to geodatabases within ArcGIS Pro projects with the {arcgisbinding} package.
+If you have an ArcGIS Pro license, you can write directly to geodatabases within Projects using the {arcgisbinding} package.
 
 ```{r echo = FALSE}
 sup_dists <- st_read("https://data.sfgov.org/api/geospatial/f2zs-jevy?accessType=DOWNLOAD&method=export&format=GeoJSON")
@@ -128,11 +155,18 @@ sf <- get_acs(
   variables = "B19013_001",
   geometry = TRUE,
   year = 2020
-)
+) %>% 
+  st_transform(3857)
 
+sf_bbox <- libraries %>% 
+  drop_na(city) %>% 
+  st_buffer(3500) %>% 
+  st_bbox()
+  
 sf %>%
   ggplot(aes(fill = estimate)) + 
   geom_sf(color = NA) + 
+  coord_sf(xlim = sf_bbox[c("xmin", "xmax")], ylim = sf_bbox[c("ymin", "ymax")], expand = TRUE) +
   scale_fill_viridis_c(option = "magma") 
 ```
 

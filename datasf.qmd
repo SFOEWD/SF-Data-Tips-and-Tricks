@@ -1,6 +1,6 @@
 # DataSF
 
-Getting data from DataSF is mostly a matter of copying the relevant URL. Many R 'read' functions can import data from a URL, e.g. `readr::read_csv`, `jsonlite::fromJSON`, `st::st_read`, etc.
+Getting data from DataSF is a matter of copying the relevant URL into one of R's many read functions, e.g. `readr::read_csv`, `jsonlite::fromJSON`, `st::st_read`, etc.
 
 ```{r}
 library(readr)

@@ -1,5 +1,7 @@
 # Geocoding
 
+## City Locator
+
 There are several ways to geocode addresses from R, but the easiest (and cheapest) way is with the [{tidygeocoder} package](https://jessecambon.github.io/tidygeocoder/) and one of the city's [internal locators.](<https://gis.sf.gov/svc/rest/services/loc/c83_eas_str_ctrl_composite/GeocodeServer/findAddressCandidates>)
 
 ::: callout-note
@@ -29,3 +31,21 @@ coords_sf <- coords %>% st_as_sf(coords = c("long", "lat"), crs = 4326)
 mapview(coords_sf)
 ```
 
+## geocodio
+
+If you need to geocode addresses outside the city, [the geocodio service](https://www.geocod.io/) is a nice option, but you'll first need to obtain your API key. Sign up for an account and register for an API key. Once you have it, you need to put it in your .Renviron file, a special text file that runs every time you open/restart R.
+
+Edit your .Renviron file with the usethis package:
+
+```{r eval = FALSE}
+library(usethis)
+edit_r_environ() # this opens the file in RStudio
+```
+
+Paste your API key like so:
+
+```bash
+GEOCODIO_API_KEY='<your_api_key>'
+```
+
+Save the file and restart R. You should then be able to call `geocode` with the `method = 'geocodio'` argument. Note that there is a rate limit of 1000 addresses per hour.
