@@ -1,6 +1,10 @@
 # Introduction {.unnumbered}
 
-This {{< sficon wip color=red >}} WIP {{< sficon wip color=red >}} Quarto 'book' is a collection of (mostly R) tips and tricks relevant to data professionals with the City and County of San Francisco.  
+This {{< sficon wip color=red >}} WIP {{< sficon wip color=red >}} Quarto 'book' is a collection of (mostly R) tips and tricks relevant to data professionals with the City and County of San Francisco. 
+
+Comments, questions, or suggestions? [Create an issue here.](https://github.com/SFOEWD/SF-Data-Tips-and-Tricks/issues)
+
+Edits, additions, or corrections? Open a pull request.
 
 To learn more about Quarto books visit <https://quarto.org/docs/books>.
 
