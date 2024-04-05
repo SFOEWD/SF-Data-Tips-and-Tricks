@@ -1,0 +1,33 @@
+# Icons
+
+The Digital Services team has provided [a nifty set of icons on the San Francisco Design System website.](https://design-system.sf.gov/components/icons/) You can use these icons in Quarto (HTML) documents by installing [the sficons extension from GitHub here.](https://github.com/SFOEWD/sficons?tab=readme-ov-file)
+
+```bash
+quarto install extension SFOEWD/sficons
+```
+To embed an icon, use the ` {{< sficon ...>}} ` shortcode. Some examples:
+
+```{r eval=FALSE}
+{{< sficon wip >}}
+{{< sficon alert >}}
+```
+
+{{< sficon wip >}}
+{{< sficon alert >}}
+
+```{r eval=FALSE}
+{{< sficon arrow-right color=firebrick >}}
+
+{{< sficon globe color=green size=5em >}}
+
+{{< sficon pencil color=gold size=10em >}}
+```
+
+
+Control the color and size of the icons:
+
+{{< sficon arrow-right color=firebrick >}}
+
+{{< sficon globe color=green size=5em >}}
+
+{{< sficon pencil color=gold size=10em >}}

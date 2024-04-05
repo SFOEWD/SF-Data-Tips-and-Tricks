@@ -1,0 +1,31 @@
+# Geocoding
+
+There are several ways to geocode addresses from R, but the easiest (and cheapest) way is with the [{tidygeocoder} package](https://jessecambon.github.io/tidygeocoder/) and one of the city's [internal locators.](<https://gis.sf.gov/svc/rest/services/loc/c83_eas_str_ctrl_composite/GeocodeServer/findAddressCandidates>)
+
+::: callout-note
+The locator will only geocode San Francisco addresses.
+:::
+
+```{r warning = FALSE}
+library(tidygeocoder)
+library(sf)
+library(mapview)
+library(tidyverse)
+
+df <- tibble(address = c("1 South Van Ness", "1 Dr Carlton B Goodlett Pl"))
+locator <- "https://gis.sf.gov/svc/rest/services/loc/c83_eas_str_ctrl_composite/GeocodeServer/findAddressCandidates"
+
+coords <- df %>% 
+  geocode(
+    api_url = locator,
+    address = address,
+    custom_query = list(outSR = "4326"), # outSR (Spatial Reference) is a required parameter
+    method = "arcgis"
+  )
+
+coords
+
+coords_sf <- coords %>% st_as_sf(coords = c("long", "lat"), crs = 4326)
+mapview(coords_sf)
+```
+

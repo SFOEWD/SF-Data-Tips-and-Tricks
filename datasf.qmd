@@ -1,0 +1,30 @@
+# DataSF
+
+Getting data from DataSF is mostly a matter of copying the relevant URL. Many R 'read' functions can import data from a URL, e.g. `readr::read_csv`, `jsonlite::fromJSON`, `st::st_read`, etc.
+
+```{r}
+library(readr)
+library(sf)
+
+reg_businesses <- read_csv("https://data.sfgov.org/resource/g8m3-pdis.csv")
+```
+
+::: callout-warning
+Behind the scenes there is a limit parameter that defaults to 1000, *even if the 'All data' radio button is selected.* To retrieve all the data, either read the same URL with the RSocrata package:\
+
+```{r eval = FALSE}
+reg_businesses <- RSocrata::read.socrata("https://data.sfgov.org/resource/g8m3-pdis.csv")
+```
+
+Or append `?$limit=9999999` to the end of the URL:
+
+```{r eval = FALSE}
+reg_businesses <- read_csv("https://data.sfgov.org/resource/g8m3-pdis.csv?$limit=9999999")
+```
+:::
+
+Read in a 'spatial' object with `st_read` and the URL with the geojson file extension:
+
+```{r}
+sup_dists <- st_read("https://data.sfgov.org/api/geospatial/f2zs-jevy?accessType=DOWNLOAD&method=export&format=GeoJSON")
+```

@@ -1,0 +1,8 @@
+title: Sficons
+author: David Ranzolin
+version: 1.0.0
+quarto-required: ">=1.2.0"
+contributes:
+  shortcodes:
+    - sficons.lua
+

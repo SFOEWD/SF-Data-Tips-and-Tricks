@@ -1,0 +1,14 @@
+{
+  "hash": "7a6ea64e07a0a42c81c1d5233f52d867",
+  "result": {
+    "markdown": "# Sharepoint\n\nSharepoint is part of many data pipelines, and the easiest way to interact with Sharepoint from R is through the [{Microsoft365R} package.](https://github.com/Azure/Microsoft365R) This package has been vetted by the Department of Technology (DT) and authentication should be straight-forward after calling one of the initial functions.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(Microsoft365R)\n\nwp <- get_sharepoint_site(\"ECN-Workforce Programs\")\nwp_docs <- wp$get_drive(\"Documents\")\n\nwp_docs$list_files()\n\nwp_docs$download_file(\"path_to_file.xlsx\")\n```\n:::\n\n\nIt is helpful to wrap common read/write operations into more usable functions:\n\n\n::: {.cell}\n\n```{.r .cell-code}\nconnect_to_sharepoint_site_docs <- function(sp_site) {\n  sp_site <- Microsoft365R::get_sharepoint_site(sp_site)\n  sp_site_doc <- sp_site$get_drive(\"Documents\")\n  return(sp_site_doc)\n}\n\nconnect_to_wp_docs <- function() connect_to_sharepoint_site_docs(\"ECN-Workforce Programs\")\n\ndownload_from_wp <- function(sp_file, destination) {\n  docs <- connect_to_wp_docs()\n  docs$download_file(sp_file, dest = destination)\n  cli::cli_alert_success(glue::glue(\"{sp_file} downloaded.\"))\n}\n\nupload_to_wp <- function(file, sp_destination) {\n  docs <- connect_to_wp_docs()\n  docs$upload_file(\n    file,\n    sp_location\n  )\n  cli::cli_alert_success(\"File uploaded.\")\n}\n\nread_wp <- function(path) {\n  tmp <- tempfile(fileext = \"xlsx\")\n  download_from_wp(\n    sp_file = glue(\"{path}.xlsx\"),\n    destination = tmp\n  )\n  out <- readxl::read_excel(tmp, .name_repair = janitor::make_clean_names)\n  return(out)\n}\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

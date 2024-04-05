@@ -1,0 +1,16 @@
+{
+  "hash": "77bac0ab2b522ce44f29a3033615b60e",
+  "result": {
+    "markdown": "# DataSF\n\nGetting data from DataSF is mostly a matter of copying the relevant URL. Many R 'read' functions can import data from a URL, e.g. `readr::read_csv`, `jsonlite::fromJSON`, `st::st_read`, etc.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(readr)\nlibrary(sf)\n```\n\n::: {.cell-output .cell-output-stderr}\n```\nLinking to GEOS 3.9.1, GDAL 3.4.3, PROJ 7.2.1; sf_use_s2() is TRUE\n```\n:::\n\n```{.r .cell-code}\nreg_businesses <- read_csv(\"https://data.sfgov.org/resource/g8m3-pdis.csv\")\n```\n\n::: {.cell-output .cell-output-stderr}\n```\nRows: 1000 Columns: 37\n```\n:::\n\n::: {.cell-output .cell-output-stderr}\n```\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (22): uniqueid, ttxid, certificate_number, ownership_name, dba_name, fu...\ndbl   (7): business_zip, supervisor_district, :@computed_region_6qbp_sg9q, :...\nlgl   (2): parking_tax, transient_occupancy_tax\ndttm  (6): dba_start_date, dba_end_date, location_start_date, location_end_d...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n```\n:::\n:::\n\n\n::: callout-warning\nBehind the scenes there is a limit parameter that defaults to 1000, *even if the 'All data' radio button is selected.* To retrieve all the data, either read the same URL with the RSocrata package:\\\n\n\n::: {.cell}\n\n```{.r .cell-code}\nreg_businesses <- RSocrata::read.socrata(\"https://data.sfgov.org/resource/g8m3-pdis.csv\")\n```\n:::\n\n\nOr append `?$limit=9999999` to the end of the URL:\n\n\n::: {.cell}\n\n```{.r .cell-code}\nreg_businesses <- read_csv(\"https://data.sfgov.org/resource/g8m3-pdis.csv?$limit=9999999\")\n```\n:::\n\n:::\n\nRead in a 'spatial' object with `st_read` and the URL with the geojson file extension:\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsup_dists <- st_read(\"https://data.sfgov.org/api/geospatial/f2zs-jevy?accessType=DOWNLOAD&method=export&format=GeoJSON\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nReading layer `OGRGeoJSON' from data source \n  `https://data.sfgov.org/api/geospatial/f2zs-jevy?accessType=DOWNLOAD&method=export&format=GeoJSON' \n  using driver `GeoJSON'\nSimple feature collection with 11 features and 7 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -123.1738 ymin: 37.63983 xmax: -122.3279 ymax: 37.8632\nGeodetic CRS:  WGS 84\n```\n:::\n:::\n",
+    "supporting": [
+      "datasf_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

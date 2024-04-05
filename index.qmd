@@ -1,0 +1,7 @@
+# Introduction {.unnumbered}
+
+This Quarto 'book' is a collection of (mostly R) tips and tricks relevant to data professionals with the City and County of San Francisco.  
+
+To learn more about Quarto books visit <https://quarto.org/docs/books>.
+
+![](assets/OEWD Circle Logo.png){fig-align="center" width="225"}

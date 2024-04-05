@@ -1,0 +1,16 @@
+{
+  "hash": "b8cebf0946284f1602b73141c79815b5",
+  "result": {
+    "markdown": "# DataSF\n\nGetting data from DataSF is mostly a matter of copying the relevant url and appending a query. Many R 'read' functions can import data from a URL, e.g. `readr::read_csv`, `jsonlite::fromJSON`, `st::st_read`, etc. \n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(readr)\n```\n:::\n",
+    "supporting": [
+      "intro_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

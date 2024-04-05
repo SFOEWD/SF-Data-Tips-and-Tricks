@@ -1,0 +1,26 @@
+project:
+  type: book
+
+book:
+  title: "SF Data Tips and Tricks"
+  author: "OEWD Data and Performance Team"
+  date: "4/3/2024"
+  chapters:
+    - index.qmd
+    - datasf.qmd
+    - spatial.qmd
+    - geocoding.qmd
+    - sharepoint.qmd
+    - icons.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+
+

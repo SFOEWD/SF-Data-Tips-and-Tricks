@@ -1,0 +1,138 @@
+# Spatial Stuff
+
+```{r warning = FALSE}
+library(sf)
+library(mapview)
+library(arcgis)
+library(tidyverse)
+```
+
+## ArcGIS REST API
+
+The [{arcgislayers} package](https://github.com/R-ArcGIS/arcgislayers) allows users to read/write data to/from the ArcGIS REST API.
+
+```{r}
+sf_libraries_url <- "https://services.arcgis.com/Zs2aNLFN00jrS4gG/arcgis/rest/services/SF_Libraries/FeatureServer"
+# arc_open can read a FeatureServer or a FeatureLayer directly
+(sf_libraries_fs <- arc_open(sf_libraries_url))
+(sf_libraries_lyr <- get_layer(sf_libraries_fs, name = "Libraries"))
+sf_libraries <- arc_select(sf_libraries_lyr)
+glimpse(sf_libraries)
+
+# You can also specify which columns to select, e.g.:
+# arc_select(
+#   sf_libraries_lyr,
+#   fields = c("common_nam", "gross_sq_f", "address"),
+#   where = "gross_sq_f < 8000"
+# )
+
+# With pipes:
+# sf_libraries_url %>% 
+#   arc_open() %>% 
+#   get_layer(name = "Libraries") %>% 
+#   arc_select()
+
+# With pipes and tidyverse:
+# (if the url points to a FeatureLayer instead of a FeatureServer)
+# sf_libraries_url %>% 
+#   arc_open() %>% 
+#   select(common_nam, gross_sq_f, address) %>% 
+#   filter(gross_sq_f < 8000) %>% 
+#   collect()
+
+mapview(sf_libraries, zcol = "air_conditioning")
+```
+
+It is also convenient to wrap this up into the body of a single function:
+
+```{r eval = FALSE}
+get_arcgis_layer <- function(lyr_name) {
+  url <- glue::glue("https://services.arcgis.com/Zs2aNLFN00jrS4gG/arcgis/rest/services/{lyr_name}/FeatureServer/0")
+  out <- arcgislayers::arc_select(arcgislayers::arc_open(url))
+  return(out)
+}
+
+libraries <- get_arcgis_layer("SF_Libraries")
+```
+
+
+## ArcGIS Pro
+
+You can write to geodatabases within ArcGIS Pro projects with the {arcgisbinding} package.
+
+```{r echo = FALSE}
+sup_dists <- st_read("https://data.sfgov.org/api/geospatial/f2zs-jevy?accessType=DOWNLOAD&method=export&format=GeoJSON")
+```
+
+
+```{r eval = FALSE}
+library(arcgisbinding)
+# arc.check_product()
+
+# Get Supervisor Districts from DataSF:
+sup_dists <- st_read("https://data.sfgov.org/api/geospatial/f2zs-jevy?accessType=DOWNLOAD&method=export&format=GeoJSON")
+
+# Write to ArcGIS Pro project geodatabase
+proj_path <- "...<full_path>.../ArcGIS/Projects/Test R Project/Test R Project.gdb/sup_dist"
+arc.write(path = proj_path, data = sup_dists)
+```
+
+![](assets/arcgisbinding.png){fig-align="center"}
+
+
+## Spatial Joins
+
+Use spatial joins to determine which points are 'within' which polygon:
+
+```{r}
+nhoods <- st_read("https://data.sfgov.org/resource/j2bu-swwd.geojson")
+# The coordinate reference systems must match
+st_crs(sf_libraries) == st_crs(sup_dists)
+
+sf_libraries %>% 
+  select(common_nam) %>% 
+  st_transform(st_crs(sup_dists)) %>% 
+  st_join(sup_dists %>% select(sup_dist), join = st_within) %>% 
+  st_join(nhoods, join = st_within)
+```
+
+
+## Removing Farallon Islands from Supervisor Districts
+
+```{r}
+d4 <- sup_dists %>% 
+  filter(sup_dist == 4) %>% 
+  st_cast("POLYGON") %>% 
+  slice(1) %>% 
+  st_cast("MULTIPOLYGON")
+
+sup_dists_no_farallon <- sup_dists %>% 
+  filter(sup_dist != 4) %>% 
+  bind_rows(d4)
+
+mapview(sup_dists_no_farallon)
+
+```
+
+## Census Data
+
+The [{tidycensus package}](https://walker-data.com/tidycensus/) is fantastic, and the documentation is full of helpful examples. 
+
+```{r results='hide'}
+library(tidycensus)
+
+sf <- get_acs(
+  state = "CA",
+  county = "San Francisco",
+  geography = "tract",
+  variables = "B19013_001",
+  geometry = TRUE,
+  year = 2020
+)
+
+sf %>%
+  ggplot(aes(fill = estimate)) + 
+  geom_sf(color = NA) + 
+  scale_fill_viridis_c(option = "magma") 
+```
+

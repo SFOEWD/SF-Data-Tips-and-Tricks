@@ -1,0 +1,16 @@
+{
+  "hash": "316bdb68101d9c7728f6cc2b0af1d844",
+  "result": {
+    "markdown": "# Icons\n\nThe Digital Services team has provided [a nifty set of icons on the San Francisco Design System website.](https://design-system.sf.gov/components/icons/) You can use these icons in Quarto (HTML) documents by installing [the sficons extension from GitHub here.](https://github.com/SFOEWD/sficons?tab=readme-ov-file)\n\n```bash\nquarto install extension SFOEWD/sficons\n```\nTo embed an icon, use the ` {{< sficon ...>}} ` shortcode. Some examples:\n\n\n::: {.cell}\n\n```{.r .cell-code}\n{{< sficon wip >}}\n{{< sficon alert >}}\n```\n:::\n\n{{< sficon wip >}}\n\n\n{{< sficon alert >}}\n\n\n::: {.cell}\n\n```{.r .cell-code}\n{{< sficon arrow-right color=firebrick >}}\n\n{{< sficon globe color=green size=5em >}}\n\n{{< sficon pencil color=gold size=10em >}}\n```\n:::\n\n\n\nControl the color and size of the icons:\n\n\n{{< sficon arrow-right color=firebrick >}}\n\n\n{{< sficon globe color=green size=5em >}}\n\n\n{{< sficon pencil color=gold size=10em >}}\n\n",
+    "supporting": [
+      "icons_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
