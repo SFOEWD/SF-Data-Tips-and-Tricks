@@ -28,5 +28,11 @@
   },
   "targets.qmd": {
     "targets.html": "48dbeecb"
+  },
+  "excel.qmd": {
+    "excel.html": "8b8c4aeb"
+  },
+  "snowflake.qmd": {
+    "snowflake.html": "3ccdb715"
   }
 }

@@ -13,6 +13,8 @@ book:
     - geocoding.qmd
     - sharepoint.qmd
     - icons.qmd
+    - excel.qmd
+    - snowflake.qmd
     - targets.qmd
     - references.qmd
 
