@@ -13,6 +13,7 @@ book:
     - geocoding.qmd
     - sharepoint.qmd
     - icons.qmd
+    - targets.qmd
     - references.qmd
 
 bibliography: references.bib
