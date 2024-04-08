@@ -4,6 +4,8 @@ The most essential packages for doing GIS work (with ESRI products) are:
 
 * sf
 * mapview
+* arcgis
+* arcgisutils
 * arcgislayers
 * arcgisbinding
 * tidycensus
@@ -120,7 +122,10 @@ sf_libraries %>%
   select(common_nam) %>% 
   st_transform(st_crs(sup_dists)) %>% 
   st_join(sup_dists %>% select(sup_dist), join = st_within) %>% 
-  st_join(nhoods, join = st_within)
+  st_join(nhoods, join = st_within) %>% 
+  st_drop_geometry() %>% 
+  mutate(common_nam = gsub(" Branch| Library", "", common_nam)) %>% 
+  head()
 ```
 
 
@@ -166,7 +171,9 @@ sf_bbox <- libraries %>%
 sf %>%
   ggplot(aes(fill = estimate)) + 
   geom_sf(color = NA) + 
+  labs(title = "Median Household Income, 2020", fill = NULL) +
   coord_sf(xlim = sf_bbox[c("xmin", "xmax")], ylim = sf_bbox[c("ymin", "ymax")], expand = TRUE) +
-  scale_fill_viridis_c(option = "magma") 
+  scale_fill_viridis_c(option = "magma", labels = scales::dollar) +
+  theme_bw()
 ```
 

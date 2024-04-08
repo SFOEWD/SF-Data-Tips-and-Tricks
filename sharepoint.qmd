@@ -37,7 +37,7 @@ upload_to_wp <- function(file, sp_destination) {
     file,
     sp_location
   )
-  cli::cli_alert_success("File uploaded.")
+  cli::cli_alert_success(glue::glue("{file} uploaded."))
 }
 
 read_wp <- function(path) {
