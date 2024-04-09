@@ -1,0 +1,48 @@
+
+/*-- scss:defaults --*/
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500&family=Roboto+Mono&display=swap');
+
+// font
+$font-family-sans-serif: 'Rubik', sans-serif !default;
+
+// colors
+$body-bg: #FFF !default;
+$body-color: #404041 !default;
+$link-color: #495ED4 !default;
+$code-color: #72994E !default;
+
+/* TODO: Customize html appearance by setting SCSS variables */
+/* See https://quarto.org/docs/output-formats/html-themes.html#theme-options */
+
+/*-- scss:rules --*/
+
+/* TODO: Provide custom CSS rules */
+
+h1.title {
+  font-weight: 600;
+  font-size: 44px;
+  line-height: 52px;
+  letter-spacing: -1px;
+}
+
+h1, h2, h3, h4, body {
+  font-family: $font-family-sans-serif;
+  font-weight: 600;
+}
+
+a {
+  color: $link-color;
+}
+
+body {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: normal
+}
+
+.button {
+  background-color: $link-color;
+  color: white;
+}

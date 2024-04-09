@@ -21,8 +21,7 @@ book:
 bibliography: references.bib
 
 format:
-  html:
-    theme: cosmo
+  oewd-report-html: default
   pdf:
     documentclass: scrreprt
 
