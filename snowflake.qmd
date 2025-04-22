@@ -2,3 +2,96 @@
 
 {{< sficon wip color=red >}} WIP {{< sficon wip color=red >}}
 
+## Setup
+
+You will first need to [install Snowflake's ODBC Driver.](https://docs.snowflake.com/en/developer-guide/odbc/odbc) Then configure the DSN for either Windows or macOS.
+
+## Making the Connection
+
+I wrapped the connection into a function:
+
+```{r eval=FALSE}
+connect_to_snowflake <- function() {
+  conn <- DBI::dbConnect(
+    odbc::odbc(), 
+    "<data_source_name>", 
+    uid = "<user_id>", 
+    pwd = rstudioapi::askForPassword())
+  return(conn)
+}
+
+con <- connect_to_snowflake()
+```
+
+This works fine for interactive analysis, but you will need to stash your password as an environment variable for various workflows, or perhaps [within {targets} projects. (see below)](https://github.com/ropensci/targets)
+
+## Using SQL
+
+Like any other database connection, you can pass SQL queries to the connection as a string.
+
+::: callout-warning
+If you set a default schema when configuring your Snowflake data source, you must explicitly reference other schemas when querying tables outside of it.
+:::
+
+```{r eval=FALSE}
+DBI::dbGetQuery(
+  con,
+  "select table_name, last_altered
+  from information_schema.tables 
+  where table_name like 'STG%' limit 5
+  ")
+```
+
+## Using R
+
+```{r eval=FALSE}
+is <- tbl(con, in_schema("INFORMATION_SCHEMA", "TABLES"))
+is %>% 
+  select(TABLE_NAME, LAST_ALTERED) %>% 
+  filter(str_detect(TABLE_NAME, '^STG')) %>%
+  head(5) %>% 
+  collect()
+```
+
+## Snowflake tables as targets
+
+We can use `tarchetypes::tar_change()` and the `LAST_ALTERED` field referenced above as a trigger in {targets} pipelines. If the date changes, the target will rerun alongside with downstream targets. Here's a small example of how that might work:
+
+`_targets.R`
+
+```{r eval=FALSE}
+library(targets)
+library(tarchetypes)
+
+tar_option_set(
+  packages = c(
+    "tibble",
+    "DBI",
+    "odbc",
+    "dplyr",
+    "dbplyr"
+    )
+  )
+
+connect_to_snowflake <- function() {
+  conn <- DBI::dbConnect(
+    odbc::odbc(),
+    "<dsn_name>",
+    uid = "<user_id",
+    pwd = "<password>")
+  return(conn)
+}
+
+tar_plan(
+  snowflake_con = connect_to_snowflake(),
+  tar_change(
+    my_table,
+    collect(tbl(snowflake_con, "MY_TABLE")),
+    change = dbGetQuery(
+      snowflake_con,
+      "select last_altered from db.information_schema.tables where table_name = 'MY_TABLE' and table_schema = 'PROD'"
+      )
+  ),
+  my_table_transformed = head(my_table)
+)
+```

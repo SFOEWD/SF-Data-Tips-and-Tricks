@@ -15,7 +15,7 @@ library(mapview)
 library(tidyverse)
 
 df <- tibble(address = c("1 South Van Ness", "1 Dr Carlton B Goodlett Pl"))
-locator <- "https://gis.sf.gov/svc/rest/services/loc/c83_eas_str_ctrl_composite/GeocodeServer/findAddressCandidates"
+locator <- "https://gis.sf.gov/dahl/rest/services/app_services/NRHP_Composite/GeocodeServer/findAddressCandidates"
 
 coords <- df %>% 
   geocode(
